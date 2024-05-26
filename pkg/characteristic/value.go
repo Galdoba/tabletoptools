@@ -3,8 +3,13 @@ package characteristic
 import "github.com/Galdoba/tabletoptools/pkg/definition/ruleset"
 
 type Value struct {
-	Current int `json:"Current"` //текущее значение
-	Max     int `json:"Maximum"` //максимальное значение для сущности
+	Current int `json:"Current"`            //текущее значение
+	Max     int `json:"Maximum"`            //максимальное значение для сущности
+	Genetic Gen `json:"Genetics,omitempty"` //placeholder
+}
+
+type Gen struct {
+	DESCR string
 }
 
 //Val - return maximum for THIS entity

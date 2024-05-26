@@ -15,6 +15,7 @@ const (
 	Social_Standing = "Social Standing"
 	Charisma        = "Charisma"
 	Caste           = "Caste"
+	Territory       = "Territory"
 	Psi             = "Psi"
 	Sanity          = "Sanity"
 	Wealth          = "Wealth"
@@ -34,6 +35,7 @@ const (
 	SOC             = "SOC"
 	CHA             = "CHA"
 	CAS             = "CAS"
+	TER             = "TER"
 	PSI             = "PSI"
 	SAN             = "SAN"
 	WLT             = "WLT"
@@ -52,5 +54,17 @@ const (
 	PHYSICAL        = "PHYSICAL"
 	MENTAL          = "MENTAL"
 	SOCIAL          = "SOCIAL"
+	RACIAL          = "RACIAL"
 	OBSCURE         = "OBSCURE"
 )
+
+func CoreChars() []string {
+	return []string{
+		Strength,
+		Dexterity,
+		Endurance,
+		Intelligence,
+		Education,
+		Social_Standing,
+	}
+}

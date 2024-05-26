@@ -3,7 +3,7 @@ package traveller
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 )
 
@@ -18,7 +18,7 @@ func UnmarshalJSON(filename string) (*Traveller, error) {
 	}
 	defer jsonFile.Close()
 
-	jsonData, err := ioutil.ReadAll(jsonFile)
+	jsonData, err := io.ReadAll(jsonFile)
 	if err != nil {
 		return nil, fmt.Errorf("can't read json file: %v", err.Error())
 	}
