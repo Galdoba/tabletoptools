@@ -2,9 +2,12 @@ module github.com/Galdoba/tabletoptools
 
 go 1.18
 
-require github.com/urfave/cli v1.22.15
+require (
+	github.com/Galdoba/devtools v0.0.0-20240523230313-8b36eae90b60
+	gopkg.in/yaml.v3 v3.0.1
+)
 
-require github.com/xrash/smetrics v0.0.0-20240312152122-5f08fbb34913 // indirect
+require github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 
 require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect

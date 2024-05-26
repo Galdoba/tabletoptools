@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/Galdoba/tabletoptools/cmd/health"
 	"github.com/urfave/cli/v2"
 )
 
@@ -23,7 +24,9 @@ func main() {
 		return nil
 	}
 	//MAIN COMMANDS
-	app.Commands = []*cli.Command{}
+	app.Commands = []*cli.Command{
+		health.Check(),
+	}
 
 	app.After = func(c *cli.Context) error {
 		return nil

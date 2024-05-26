@@ -1,0 +1,5 @@
+ProgramRoot,string,Program Files Root,false,
+UserRoot,string,User Files Root,false,
+Log,string,Log Path,false,
+Rulesets,[]string,Rule Systems,false,
+encoding,yaml, , , 
