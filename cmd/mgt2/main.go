@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Galdoba/tabletoptools/cmd/health"
+	"github.com/Galdoba/tabletoptools/internal/mgt2/health"
 	"github.com/urfave/cli/v2"
 )
 
@@ -24,6 +24,8 @@ func main() {
 		return nil
 	}
 	//MAIN COMMANDS
+	allCommands := []*cli.Command{}
+	allCommands = append(allCommands, health.Commands()...)
 	app.Commands = []*cli.Command{
 		health.Check(),
 	}
@@ -39,3 +41,14 @@ func main() {
 	}
 
 }
+
+/*
+mgt2 character new
+mgt2 character print
+mgt2 starship new
+mgt2 freight stats
+mgt2 hyperjump calculate
+mgt2 hyperjump roll
+mgt2 health
+
+*/

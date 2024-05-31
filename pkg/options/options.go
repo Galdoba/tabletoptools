@@ -6,6 +6,8 @@ const (
 	PD_SPECIE    = "Specie"
 	PD_HOMEWORLD = "Homeworld"
 	PD_TRAITS    = "Traits"
+	RULESET      = "Ruleset"
+	VALUE_TYPE   = "Value Type"
 )
 
 type Option struct {
