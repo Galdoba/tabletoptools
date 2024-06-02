@@ -8,9 +8,14 @@ import (
 func TestT(t *testing.T) {
 	te := TravellerEntry{}
 	te.Assets = NewAssets()
-	te.Assets.Add("STR")
-	te.Assets.Modify("STR", 5)
-	te.Assets.Modify("STR", -2)
+	te.Attributes = NewAttributes()
+	if err := te.AquireAsset("STR"); err != nil {
+		fmt.Println(err.Error())
+	}
+	te.ModifyAsset("STR", 5)
+
+	te.AquireAttr("Human", "Have no distinct traits")
+
 	bt, err := te.marshal()
 	if err != nil {
 		fmt.Println(err.Error())
