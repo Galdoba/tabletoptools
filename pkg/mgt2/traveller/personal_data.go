@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Galdoba/devtools/decidion"
-	"github.com/Galdoba/tabletoptools/pkg/dice"
 	"github.com/Galdoba/tabletoptools/pkg/options"
 )
 
@@ -19,24 +17,11 @@ type PersonalData struct {
 
 var ErrBadOptionType = errors.New("bad option type")
 
-func newPersonal(dice *dice.Dicepool, opts ...options.Option) (*PersonalData, error) {
+func newPersonal(opts ...options.Option) (*PersonalData, error) {
 	pd := PersonalData{}
 	if err := pd.injectoptions(opts...); err != nil {
 		return nil, fmt.Errorf("options injections failed: %v", err.Error())
 	}
-	if pd.Name == "" {
-		pd.Name = decidion.One("select name", dice, false, "name 1", "name 2")
-	}
-	if pd.Homeworld == "" {
-		pd.Homeworld = decidion.One("select name", dice, false, "Earth", "Mars")
-	}
-	if pd.Age == 0 {
-		pd.Age = dice.Sroll("5d6")
-	}
-	if pd.Species == "" {
-		pd.Species = decidion.One("select name", dice, false, "Human", "Aslan")
-	}
-
 	return &pd, nil
 }
 

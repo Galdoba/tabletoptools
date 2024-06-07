@@ -8,6 +8,15 @@ type Event struct {
 	decidionOpts []string
 }
 
+type Decidion struct {
+	Descriptor     string
+	TestParameters map[string]string
+	SuccessDescr   string
+	SuccessConseq  *action
+	DefaultDescr   string
+	DefaultConseq  *action
+}
+
 type action struct {
 	subject interface{}
 	objects []interface{}

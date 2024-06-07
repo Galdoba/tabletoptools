@@ -1,4 +1,4 @@
-package db
+package entry
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 )
 
 func TestT(t *testing.T) {
-	te := TravellerEntry{}
+	te := Entry{}
 	te.Assets = NewAssets()
 	te.Attributes = NewAttributes()
 	if err := te.AquireAsset("STR"); err != nil {
@@ -16,7 +16,7 @@ func TestT(t *testing.T) {
 
 	te.AquireAttr("Human", "Have no distinct traits")
 
-	bt, err := te.marshal()
+	bt, err := ToBytes(te)
 	if err != nil {
 		fmt.Println(err.Error())
 	}

@@ -25,15 +25,26 @@ func Option(key string, val interface{}) option {
 
 func New(dice *dice.Dicepool, opts ...options.Option) (*Traveller, error) {
 	tr := Traveller{}
-	err := fmt.Errorf("no generation comenced")
-	tr.Characteristics, err = characteristic.NewCharSet(characteristic.CoreChars()...)
+	err := fmt.Errorf("no created")
+	tr.Characteristics, err = characteristic.NewCharSet()
 	if err != nil {
-		return nil, fmt.Errorf("can't create characteristic block: %v", err.Error())
+		return nil, fmt.Errorf("can't create charset block: %v", err.Error())
 	}
-	tr.Characteristics.Roll(dice, opts...)
-	tr.Personal, err = newPersonal(dice, opts...)
+	tr.Personal, err = newPersonal(opts...)
 	if err != nil {
 		return nil, fmt.Errorf("can't create personal block: %v", err.Error())
 	}
-	return &tr, nil
+	return &tr, err
+}
+
+func (tr *Traveller) Roll(dice Roller, opts ...options.Option) error {
+	err := fmt.Errorf("no generation comenced")
+	if err = tr.Characteristics.Roll(dice, opts...); err != nil {
+		return fmt.Errorf("can't roll characteristic block: %v", err.Error())
+	}
+
+}
+
+type Roller interface {
+	Sroll(string) int
 }

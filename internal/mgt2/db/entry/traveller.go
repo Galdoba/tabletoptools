@@ -1,4 +1,4 @@
-package db
+package entry
 
 import (
 	"encoding/json"
@@ -11,6 +11,13 @@ type Entry struct {
 	Attributes     *AttributeData `json:"Attributes,omitempty"` //все то что сводится к описательному значению (оно всегда есть), и имеет перманентный эффект от наличия/отсуствия (трэйты, контакты)
 	EventPath      []EventDescr   `json:"Events,omitempty"`     //все то что сводится к событию.
 
+}
+
+func NewEntry() *Entry {
+	e := Entry{}
+	e.Assets = NewAssets()
+	e.Attributes = NewAttributes()
+	return &e
 }
 
 func (te *Entry) KeyIsBad(k string) bool {
@@ -124,6 +131,15 @@ func (te *Entry) DescribeAttr(k string) string {
 	return ""
 }
 
-func (te *Entry) marshal() ([]byte, error) {
-	return json.MarshalIndent(te, "", "  ")
+func ToBytes(te Entry) ([]byte, error) {
+	return json.MarshalIndent(&te, "", "  ")
+}
+
+func FromBytes(bt []byte) (Entry, error) {
+	entr := Entry{}
+	err := json.Unmarshal(bt, &entr)
+	if err != nil {
+		return Entry{}, err
+	}
+	return entr, nil
 }

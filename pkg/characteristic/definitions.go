@@ -68,3 +68,7 @@ func CoreChars() []string {
 		Social_Standing,
 	}
 }
+
+type Roller interface {
+	Sroll(string) int
+}

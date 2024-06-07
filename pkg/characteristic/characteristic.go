@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Galdoba/tabletoptools/pkg/dice"
 	"github.com/Galdoba/tabletoptools/pkg/options"
 )
 
@@ -189,7 +188,7 @@ func AbbByRace(r string) []string {
 	}
 }
 
-func (cs *Set) Roll(dice *dice.Dicepool, opts ...options.Option) error {
+func (cs *Set) Roll(dice Roller, opts ...options.Option) error {
 	for k := range cs.CHR {
 		setAs := 0
 		for _, o := range opts {
