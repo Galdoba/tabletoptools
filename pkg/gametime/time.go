@@ -321,13 +321,13 @@ func (gt *Gametime) String() string {
 		for len(y) < 4 {
 			y = "0" + y
 		}
-		y = "-" + y + " IC"
+		y = "-" + y
 	case true:
 		y = fmt.Sprintf("%v", gt.year*-1)
 		for len(y) < 4 {
 			y = "0" + y
 		}
-		y = "-" + y + "*IC"
+		y = "-" + y
 	}
 	mn := monthStr(gt.month)
 	eo := eonStr(gt.eon)
@@ -416,28 +416,14 @@ func monthStr(i int) string {
 	}
 }
 
-/*
-1  2  3  4  5  6  7  8
-   9 10 11 12 13 14 15
-  16 17 18 19 20 21 22
+func (gt *Gametime) After(d Duration) *Gametime {
+	gt2 := NewByTick(gt.Tick())
+	gt2.tick += d.Ticks()
+	normalizeTime(gt2)
+	return gt2
+}
 
-0  0  0  0  0  0  1  1
-   1  1  1  1  1  2  2
-  16 17 18 19 20 21 22
-*/
-
-/*
-format:
-full:
-HH:MM:SS DDD-YYYY UIT
-15:02:01 444-5555
-date:
-DDD-YYYY IC
-
-time3:
-HH:MM:SS
-
-time2:
-HH:MM
-
-*/
+func (gt *Gametime) Pass(d Duration) {
+	gt.tick += d.Ticks()
+	normalizeTime(gt)
+}
