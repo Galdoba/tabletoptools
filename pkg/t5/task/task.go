@@ -73,25 +73,6 @@ func newResolution(tn int, result []int) Resolution {
 			r.Outcome = SUCCESS
 		}
 	}
-	// return r
-	// if sSuccess && sFailure {
-	// 	r.Outcome = SPECTACULARLY_INTERESING
-	// 	return r
-	// }
-	// if sSuccess {
-	// 	r.Outcome = SPECTACULAR_SUCCESS
-	// 	return r
-	// }
-	// if sFailure {
-	// 	r.Outcome = SPECTACULAR_FAILURE
-	// 	return r
-	// }
-	// switch sum(result) <= tn {
-	// case true:
-	// 	r.Outcome = SUCCESS
-	// case false:
-	// 	r.Outcome = FAILURE
-	// }
 	return r
 }
 
