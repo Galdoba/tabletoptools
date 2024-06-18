@@ -23,9 +23,9 @@ func FromStruct(tr *traveller.Traveller) (*entry.Entry, error) {
 	return te, nil
 }
 
-func ToStruct(e *entry.Entry) (*traveller.Traveller, error) {
-	tr := traveller.Traveller{}
-}
+// func ToStruct(e *entry.Entry) (*traveller.Traveller, error) {
+// 	tr := traveller.Traveller{}
+// }
 
 /*
 Load(seed string) (*mgt2.Traveller, error)
