@@ -42,7 +42,7 @@ func (tr *Traveller) Roll(dice Roller, opts ...options.Option) error {
 	if err = tr.Characteristics.Roll(dice, opts...); err != nil {
 		return fmt.Errorf("can't roll characteristic block: %v", err.Error())
 	}
-
+	return nil
 }
 
 type Roller interface {

@@ -25,6 +25,7 @@ func FromStruct(tr *traveller.Traveller) (*entry.Entry, error) {
 
 func ToStruct(e *entry.Entry) (*traveller.Traveller, error) {
 	tr := traveller.Traveller{}
+	return &tr, nil
 }
 
 /*
