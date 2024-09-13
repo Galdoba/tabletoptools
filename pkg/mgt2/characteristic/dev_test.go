@@ -14,7 +14,7 @@ func TestSet(t *testing.T) {
 	}
 	fmt.Println(set)
 	dice := dice.New()
-	for k, v := range set.byCode {
+	for k, v := range set.ByCode {
 		v.Roll(dice)
 		fmt.Println(k, v)
 		fmt.Println(v.Encode())

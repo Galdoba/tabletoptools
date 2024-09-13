@@ -1,50 +1,32 @@
 package traveller
 
 import (
-	"fmt"
-
-	"github.com/Galdoba/tabletoptools/pkg/characteristic"
 	"github.com/Galdoba/tabletoptools/pkg/dice"
-	"github.com/Galdoba/tabletoptools/pkg/options"
+	"github.com/Galdoba/tabletoptools/pkg/mgt2/characteristic"
 )
 
 type Traveller struct {
-	Characteristics *characteristic.Set `json:"Characteristics"`
-	Personal        *PersonalData       `json:"Personal Info"`
-	Finance         FinanceData         `json:"Finance Info"`
+	CharSet *characteristic.Set
+	dice    DiceRoller
 }
 
-type option struct {
-	key string
-	val interface{}
-}
-
-func Option(key string, val interface{}) option {
-	return option{key, val}
-}
-
-func New(dice *dice.Dicepool, opts ...options.Option) (*Traveller, error) {
+func New() *Traveller {
 	tr := Traveller{}
-	err := fmt.Errorf("no created")
-	tr.Characteristics, err = characteristic.NewCharSet()
-	if err != nil {
-		return nil, fmt.Errorf("can't create charset block: %v", err.Error())
-	}
-	tr.Personal, err = newPersonal(opts...)
-	if err != nil {
-		return nil, fmt.Errorf("can't create personal block: %v", err.Error())
-	}
-	return &tr, err
+	tr.CharSet = characteristic.NewSet()
+	tr.CharSet.Aslan()
+	tr.dice = dice.New()
+	return &tr
 }
 
-func (tr *Traveller) Roll(dice Roller, opts ...options.Option) error {
-	err := fmt.Errorf("no generation comenced")
-	if err = tr.Characteristics.Roll(dice, opts...); err != nil {
-		return fmt.Errorf("can't roll characteristic block: %v", err.Error())
+type DiceRoller interface {
+	Sroll(string) int
+}
+
+func (tr *Traveller) RollCharacteristics() error {
+	for _, chr := range tr.CharSet.ByCode {
+		if err := chr.Roll(tr.dice); err != nil {
+			return err
+		}
 	}
 	return nil
-}
-
-type Roller interface {
-	Sroll(string) int
 }

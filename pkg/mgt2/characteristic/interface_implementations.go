@@ -11,7 +11,7 @@ func (ch *characteristic) Mod() int {
 	case 0:
 		return -3
 	default:
-		return (ch.effectiveScore % 3) - 2
+		return (ch.effectiveScore / 3) - 2
 	}
 }
 
