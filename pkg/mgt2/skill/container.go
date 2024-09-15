@@ -6,57 +6,43 @@ import (
 	"strings"
 )
 
-type SkillSet struct {
+type Set struct {
 	SklByCode map[string]*skill
 }
 
-func NewSet() *SkillSet {
-	sks := SkillSet{}
+func NewSet() *Set {
+	sks := Set{}
 	sks.SklByCode = make(map[string]*skill)
 	return &sks
 }
 
-func (sks *SkillSet) Gain(value string) error {
-	key, minVal := parseGain(value)
-	fmt.Println(key, minVal)
-	if _, ok := sks.SklByCode[key]; !ok {
-		skNew, err := New(key, MaxScore(4), EffectiveScore(minVal))
+func (cs *Set) Train(name string) error {
+	if _, ok := cs.SklByCode[name]; !ok {
+		sk, err := New(name, MaxScore(4), EffectiveScore(1))
 		if err != nil {
 			return err
 		}
-		sks.SklByCode[key] = skNew
-		fmt.Println("New", minVal, skNew)
+		cs.SklByCode[name] = sk
 		return nil
 	}
-	if sks.SklByCode[key].effectiveScore < minVal {
-		sks.SklByCode[key].effectiveScore = minVal
+	sk := cs.SklByCode[name]
+	switch len(sk.specialities) {
+	case 0:
+		if (sk.effectiveScore + 1) > sk.maxScore {
+			return fmt.Errorf("can't train %v: maximum level (%v) reached", sk.name, sk.maxScore)
+		}
+		sk.effectiveScore++
 		return nil
-	}
-	sks.SklByCode[key].effectiveScore++
-	return nil
-}
-
-func (sks *SkillSet) validate() error {
-	for _, sk := range sks.SklByCode {
-		if sk.parent == "" && len(sk.specialities) == 0 {
-			continue
-		}
-		for _, spec := range sk.specialities {
-			if _, ok := sks.SklByCode[spec]; !ok {
-				newSpec, err := New(spec)
-				if err != nil {
-					return err
-				}
-				sks.SklByCode[spec] = newSpec
+	default:
+		specVals := []int{}
+		for _, specKey := range sk.specialities {
+			if specSkill, ok := cs.SklByCode[specKey]; ok {
+				specVals = append(specVals, specSkill.effectiveScore)
 			}
-			specSk := sks.SklByCode[spec]
-			if sk.effectiveScore > specSk.effectiveScore {
-				return fmt.Errorf("speciality score is more than parent score: %v=%v %v=%v", specSk.name, specSk.effectiveScore, sk.name, sk.effectiveScore)
-			}
-
 		}
+
 	}
-	return nil
+
 }
 
 func parseGain(value string) (string, int) {

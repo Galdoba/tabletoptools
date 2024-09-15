@@ -3,11 +3,13 @@ package traveller
 import (
 	"github.com/Galdoba/tabletoptools/pkg/dice"
 	"github.com/Galdoba/tabletoptools/pkg/mgt2/characteristic"
+	"github.com/Galdoba/tabletoptools/pkg/mgt2/skill"
 )
 
 type Traveller struct {
-	CharSet *characteristic.Set
-	dice    DiceRoller
+	CharSet  *characteristic.Set
+	SkillSet *skill.Set
+	dice     DiceRoller
 }
 
 func New() *Traveller {

@@ -35,7 +35,3 @@ func longName(name, parent string) string {
 		return fmt.Sprintf("%v (%v)", parent, name)
 	}
 }
-
-/*
-New()
-*/
