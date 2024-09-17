@@ -24,6 +24,10 @@ func New(name string, options ...SkillOption) (*skill, error) {
 	}
 	sk.maxScore = settings.maxScore
 	sk.effectiveScore = settings.effectiveScore
+	if len(sk.specialities) > 0 {
+		sk.maxScore = 0
+		sk.effectiveScore = 0
+	}
 	return &sk, nil
 }
 

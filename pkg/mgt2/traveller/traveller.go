@@ -7,16 +7,28 @@ import (
 )
 
 type Traveller struct {
-	CharSet  *characteristic.Set
-	SkillSet *skill.Set
-	dice     DiceRoller
+	Species      string
+	CharSet      *characteristic.Set
+	SkillSet     *skill.Set
+	dice         DiceRoller
+	creationMode bool
 }
 
-func New() *Traveller {
+func New(options ...Options) *Traveller {
 	tr := Traveller{}
 	tr.CharSet = characteristic.NewSet()
-	tr.CharSet.Aslan()
-	tr.dice = dice.New()
+	tr.SkillSet = skill.NewSet()
+	settings := defaultCreationOptions()
+	for _, enrich := range options {
+		enrich(&settings)
+	}
+	tr.Species = settings.race
+	tr.dice = settings.dice
+	if tr.dice == nil {
+		tr.dice = dice.New()
+	}
+	//tr.CharSet.RollPreset(settings.race)
+
 	return &tr
 }
 

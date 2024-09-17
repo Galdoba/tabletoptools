@@ -1,6 +1,11 @@
 package characteristic
 
-import "fmt"
+import (
+	"fmt"
+
+	. "github.com/Galdoba/tabletoptools/pkg/mgt2/key"
+	"github.com/Galdoba/tabletoptools/pkg/mgt2/preset"
+)
 
 type Set struct {
 	ByCode map[string]*characteristic
@@ -12,11 +17,32 @@ func NewSet() *Set {
 	return &cs
 }
 
+func (cs *Set) ImportPreset(presetName string) error {
+	if len(cs.ByCode) != 0 {
+		return fmt.Errorf("non empty set received")
+	}
+	presetValues, err := preset.Load(presetName)
+	if err != nil {
+		return fmt.Errorf("preset loading failed: %v", err)
+	}
+	for _, imported := range presetValues.Craracteristics {
+		chr, err := New(imported.Name, CreationDice(imported.Dices), CreationMod(imported.Mod))
+		if err != nil {
+			return fmt.Errorf("characteristic '%v' creation failed: %v", imported.Name, err)
+		}
+		cs.ByCode[chr.code] = chr
+		if len(cs.ByCode) != 6 {
+			return fmt.Errorf("failed to create new set")
+		}
+	}
+	return nil
+}
+
 func (cs *Set) Human() (*Set, error) {
 	if len(cs.ByCode) != 0 {
 		return nil, fmt.Errorf("non empty set received")
 	}
-	for _, name := range []string{STR, DEX, END, INT, EDU, SOC} {
+	for _, name := range []string{CHAR_NAME_STR, CHAR_NAME_DEX, CHAR_NAME_END, CHAR_NAME_INT, CHAR_NAME_EDU, CHAR_NAME_SOC} {
 		chr, err := New(name)
 		switch name {
 		default:
@@ -36,12 +62,12 @@ func (cs *Set) Aslan() (*Set, error) {
 	if len(cs.ByCode) != 0 {
 		return nil, fmt.Errorf("non empty set received")
 	}
-	for _, name := range []string{STR, DEX, END, INT, EDU, TER} {
+	for _, name := range []string{CHAR_NAME_STR, CHAR_NAME_DEX, CHAR_NAME_END, CHAR_NAME_INT, CHAR_NAME_EDU, CHAR_NAME_TER} {
 		chr, err := New(name)
 		switch name {
-		case STR:
+		case CHAR_NAME_STR:
 			chr, err = New(name, CreationMod(2))
-		case DEX:
+		case CHAR_NAME_DEX:
 			chr, err = New(name, CreationMod(-2))
 		default:
 		}
@@ -60,14 +86,14 @@ func (cs *Set) Vargr() (*Set, error) {
 	if len(cs.ByCode) != 0 {
 		return nil, fmt.Errorf("non empty set received")
 	}
-	for _, name := range []string{STR, DEX, END, INT, EDU, CHA} {
+	for _, name := range []string{CHAR_NAME_STR, CHAR_NAME_DEX, CHAR_NAME_END, CHAR_NAME_INT, CHAR_NAME_EDU, CHAR_NAME_CHA} {
 		chr, err := New(name)
 		switch name {
-		case STR:
+		case CHAR_NAME_STR:
 			chr, err = New(name, CreationMod(-1))
-		case DEX:
+		case CHAR_NAME_DEX:
 			chr, err = New(name, CreationMod(1))
-		case END:
+		case CHAR_NAME_END:
 			chr, err = New(name, CreationMod(-1))
 		default:
 		}

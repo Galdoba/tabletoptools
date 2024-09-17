@@ -127,7 +127,6 @@ const (
 )
 
 func specialitiesAndParent(name string) ([]string, string) {
-
 	switch name {
 	case Admin:
 		return []string{}, ""

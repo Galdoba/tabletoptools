@@ -1,5 +1,9 @@
 package characteristic
 
+import (
+	. "github.com/Galdoba/tabletoptools/pkg/mgt2/key"
+)
+
 type CharacteristicOption func(*charOpt)
 
 type charOpt struct {
@@ -46,36 +50,36 @@ func CreationDice(dc int) CharacteristicOption {
 
 func abbCodeType(chName string) (string, string, string) {
 	switch chName {
-	case STR:
-		return "STR", C1, physical
-	case DEX:
-		return "DEX", C2, physical
-	case END:
-		return "END", C3, physical
-	case INT:
-		return "INT", C4, mental
-	case EDU:
-		return "EDU", C5, mental
-	case SOC:
-		return "SOC", C6, mental
-	case WLT:
-		return "WLT", CW, obscure
-	case LCK:
-		return "LCK", CL, obscure
-	case MRL:
-		return "MRL", CM, obscure
-	case STY:
-		return "STY", CS, obscure
-	case PSY:
-		return "PSY", CP, obscure
-	case INS:
-		return "INS", C4, mental
-	case PCK:
-		return "PCK", C6, mental
-	case TER:
-		return "TER", C6, mental
-	case CHA:
-		return "CHA", C6, mental
+	case CHAR_NAME_STR:
+		return "STR", CHAR_CODE_C1, physical
+	case CHAR_NAME_DEX:
+		return "DEX", CHAR_CODE_C2, physical
+	case CHAR_NAME_END:
+		return "END", CHAR_CODE_C3, physical
+	case CHAR_NAME_INT:
+		return "INT", CHAR_CODE_C4, mental
+	case CHAR_NAME_EDU:
+		return "EDU", CHAR_CODE_C5, mental
+	case CHAR_NAME_SOC:
+		return "SOC", CHAR_CODE_C6, mental
+	case CHAR_NAME_WLT:
+		return "WLT", CHAR_CODE_CW, obscure
+	case CHAR_NAME_LCK:
+		return "LCK", CHAR_CODE_CL, obscure
+	case CHAR_NAME_MRL:
+		return "MRL", CHAR_CODE_CM, obscure
+	case CHAR_NAME_STY:
+		return "STY", CHAR_CODE_CS, obscure
+	case CHAR_NAME_PSY:
+		return "PSY", CHAR_CODE_CP, obscure
+	case CHAR_NAME_INS:
+		return "INS", CHAR_CODE_C4, mental
+	case CHAR_NAME_PCK:
+		return "PCK", CHAR_CODE_C6, mental
+	case CHAR_NAME_TER:
+		return "TER", CHAR_CODE_C6, mental
+	case CHAR_NAME_CHA:
+		return "CHA", CHAR_CODE_C6, mental
 	}
 	return "invalid", "invalid", "invalid"
 }

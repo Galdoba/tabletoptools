@@ -3,6 +3,8 @@ package characteristic
 import (
 	"reflect"
 	"testing"
+
+	"github.com/Galdoba/tabletoptools/pkg/mgt2/key"
 )
 
 func TestNew(t *testing.T) {
@@ -17,9 +19,9 @@ func TestNew(t *testing.T) {
 		wantErr bool
 	}{
 		// TODO: Add test cases.
-		{name: "Effective Score Valid", args: args{STR, []CharacteristicOption{EffectiveScore(5), MaxScore(5)}}, want: &characteristic{name: STR, abb: "STR", code: "C1", cType: physical, effectiveScore: 5, maxScore: 5, creationMod: 0, creationDice: 2}, wantErr: false},
-		{name: "Effective Score Invalid 1", args: args{STR, []CharacteristicOption{EffectiveScore(5), MaxScore(4)}}, want: nil, wantErr: true},
-		{name: "Effective Score Invalid 2", args: args{STR, []CharacteristicOption{MaxScore(-4)}}, want: nil, wantErr: true},
+		{name: "Effective Score Valid", args: args{key.CHAR_NAME_STR, []CharacteristicOption{EffectiveScore(5), MaxScore(5)}}, want: &characteristic{name: key.CHAR_NAME_STR, abb: "STR", code: "C1", cType: physical, effectiveScore: 5, maxScore: 5, creationMod: 0, creationDice: 2}, wantErr: false},
+		{name: "Effective Score Invalid 1", args: args{key.CHAR_NAME_STR, []CharacteristicOption{EffectiveScore(5), MaxScore(4)}}, want: nil, wantErr: true},
+		{name: "Effective Score Invalid 2", args: args{key.CHAR_NAME_STR, []CharacteristicOption{MaxScore(-4)}}, want: nil, wantErr: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
