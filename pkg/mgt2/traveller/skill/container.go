@@ -20,7 +20,7 @@ func (ss *Set) Train(name string) error {
 	sk, ok := ss.SklByCode[name]
 	switch ok {
 	case false:
-		skl, err := New(name, EffectiveScore(4))
+		skl, err := New(name, MaxScore(4))
 		if err != nil {
 			return fmt.Errorf("skill creation failed: %v")
 		}
@@ -104,6 +104,26 @@ func parseBrakets(text string) string {
 		return "error"
 	}
 	return "no brackets"
+}
+
+func (ss *Set) Map() map[string]int {
+	ssmap := make(map[string]int)
+	for k, s := range ss.SklByCode {
+		ssmap[k] = s.effectiveScore
+	}
+	return ssmap
+}
+
+func UnMap(ssmap map[string]int) (*Set, error) {
+	ss := NewSet()
+	for k, score := range ssmap {
+		skl, err := New(k, EffectiveScore(score))
+		if err != nil {
+			return nil, err
+		}
+		ss.SklByCode[k] = skl
+	}
+	return ss, nil
 }
 
 /*

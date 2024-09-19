@@ -31,9 +31,10 @@ func (cs *Set) ImportPreset(presetName string) error {
 			return fmt.Errorf("characteristic '%v' creation failed: %v", imported.Name, err)
 		}
 		cs.ByCode[chr.code] = chr
-		if len(cs.ByCode) != 6 {
-			return fmt.Errorf("failed to create new set")
-		}
+
+	}
+	if len(cs.ByCode) != 6 {
+		return fmt.Errorf("failed to create new set")
 	}
 	return nil
 }
@@ -106,6 +107,26 @@ func (cs *Set) Vargr() (*Set, error) {
 		return nil, fmt.Errorf("failed to create new set")
 	}
 	return cs, nil
+}
+
+func (cs *Set) Map() map[string]string {
+	chrMap := make(map[string]string)
+	for k, chr := range cs.ByCode {
+		chrMap[k] = chr.Encode()
+	}
+	return chrMap
+}
+
+func UnMap(chrMap map[string]string) *Set {
+	set := NewSet()
+	for _, v := range chrMap {
+		chr, err := Decode(v)
+		if err != nil {
+			panic(err)
+		}
+		set.ByCode[chr.code] = chr
+	}
+	return set
 }
 
 /*

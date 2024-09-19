@@ -3,6 +3,8 @@ package skill
 import (
 	"reflect"
 	"testing"
+
+	"github.com/Galdoba/tabletoptools/pkg/mgt2/key"
 )
 
 func TestNew(t *testing.T) {
@@ -18,10 +20,10 @@ func TestNew(t *testing.T) {
 		wantErr bool
 	}{
 		// TODO: Add test cases.
-		{name: "simple Admin", args: args{name: Admin}, want: &skill{name: "Admin", parent: "", specialities: []string{}, effectiveScore: 0, maxScore: 15}, wantErr: false},
-		{name: "simple Admin with max score limit", args: args{Admin, []SkillOption{MaxScore(4)}}, want: &skill{name: "Admin", parent: "", specialities: []string{}, effectiveScore: 0, maxScore: 4}, wantErr: false},
-		{name: "cascade Tactics", args: args{name: Tactics}, want: &skill{name: "Tactics", parent: "", specialities: []string{Military, Naval}, effectiveScore: 0, maxScore: 15}, wantErr: false},
-		{name: "cascade Tactics Military", args: args{name: Military}, want: &skill{name: "Tactics (Military)", parent: Tactics, specialities: []string{}, effectiveScore: 0, maxScore: 15}, wantErr: false},
+		{name: "simple Admin", args: args{name: key.SKL_Admin}, want: &skill{name: "Admin", parent: "", specialities: []string{}, effectiveScore: 0, maxScore: 15}, wantErr: false},
+		{name: "simple Admin with max score limit", args: args{key.SKL_Admin, []SkillOption{MaxScore(4)}}, want: &skill{name: "Admin", parent: "", specialities: []string{}, effectiveScore: 0, maxScore: 4}, wantErr: false},
+		{name: "cascade Tactics", args: args{name: key.SKL_Tactics}, want: &skill{name: "Tactics", parent: "", specialities: []string{key.SKL_Military, key.SKL_Naval}, effectiveScore: 0, maxScore: 15}, wantErr: false},
+		{name: "cascade Tactics Military", args: args{name: key.SKL_Military}, want: &skill{name: "Tactics (Military)", parent: key.SKL_Tactics, specialities: []string{}, effectiveScore: 0, maxScore: 15}, wantErr: false},
 		{name: "bad", args: args{name: "bad key"}, want: nil, wantErr: true},
 	}
 
