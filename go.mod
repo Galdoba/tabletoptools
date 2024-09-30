@@ -1,9 +1,11 @@
 module github.com/Galdoba/tabletoptools
 
-go 1.18
+go 1.21
+
+toolchain go1.21.6
 
 require (
-	github.com/Galdoba/devtools v0.0.0-20240526021321-3ad8501bc298
+	github.com/Galdoba/devtools v0.0.0-20240917031409-e84b3c0bd884
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -38,7 +40,7 @@ require (
 
 require (
 	github.com/charmbracelet/lipgloss v0.11.0
-	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	github.com/urfave/cli/v2 v2.27.2
+	github.com/urfave/cli/v2 v2.27.4
 )

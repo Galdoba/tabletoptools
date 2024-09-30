@@ -12,7 +12,6 @@ func (ch *characteristic) Encode() string {
 }
 
 func Decode(str string) (*characteristic, error) {
-	//C1 : "Strenght : 12/15 (2d6+4)"
 	err := errors.New("no decoding started")
 	sp1 := strings.Split(str, " : ")
 	if len(sp1) != 2 {
