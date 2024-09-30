@@ -119,3 +119,7 @@ func (ch *characteristic) Roll(dice DiceRoller) error {
 	ch.effectiveScore = r
 	return nil
 }
+
+func (ch *characteristic) Score() int {
+	return ch.effectiveScore
+}

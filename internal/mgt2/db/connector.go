@@ -11,12 +11,12 @@ type DB struct {
 
 func FromStruct(tr *traveller.Traveller) (*entry.Entry, error) {
 	te := entry.NewEntry()
-	chrSet := tr.Characteristics
-	for key, chr := range chrSet.CHR {
-		if err := te.AquireAsset(key.Abbreviation); err != nil {
+	chrSet := tr.CharSet
+	for key, chr := range chrSet.ByCode {
+		if err := te.AquireAsset(key); err != nil {
 			return nil, err
 		}
-		if err := te.ModifyAsset(key.Abbreviation, chr.Current); err != nil {
+		if err := te.ModifyAsset(key, chr.Score()); err != nil {
 			return nil, err
 		}
 	}
