@@ -9,7 +9,8 @@ import (
 	"github.com/Galdoba/tabletoptools/pkg/mgt2/iiss/sah"
 	"github.com/Galdoba/tabletoptools/pkg/mgt2/iiss/social"
 	"github.com/Galdoba/tabletoptools/pkg/mgt2/iiss/systemorbit"
-	profile "github.com/Galdoba/tabletoptools/pkg/mgt2/profile"
+	"github.com/Galdoba/tabletoptools/pkg/mgt2/profile"
+	"github.com/Galdoba/tabletoptools/pkg/mgt2/tradecode"
 )
 
 const (
@@ -37,11 +38,12 @@ func New(name string) *World {
 }
 
 func (w *World) SetGenerationMethod(m string) error {
+	w.Profile.Delete(genarationMethod)
 	switch m {
 	default:
 		return fmt.Errorf("generation_method = %v: unimplemented", m)
-	case method.Basic:
-		return w.Profile.Inject("generation_method", m)
+	case method.Basic, method.Continuation:
+		return w.Profile.Inject(genarationMethod, m)
 	}
 }
 
@@ -51,10 +53,25 @@ func (w *World) GenerateMissingData(dice *dice.Dicepool) error {
 	default:
 		return fmt.Errorf("mathod '%v' unimplemented", genM)
 	case method.Basic:
+		if err := w.OrbitalData.GenerateMissing(w.Profile, dice); err != nil {
+			return err
+		}
 		if err := w.PhysicalData.GenerateMissing(w.Profile, dice); err != nil {
 			return err
 		}
 		if err := w.SocialData.GenerateMissing(w.Profile, dice); err != nil {
+			return err
+		}
+		tc := tradecode.TradeCodes(w.Profile)
+		if err := tradecode.Inject(w.Profile, tc...); err != nil {
+			return err
+		}
+		w.SetGenerationMethod(method.Continuation)
+	case method.Continuation:
+		if err := w.OrbitalData.GenerateMissing(w.Profile, dice); err != nil {
+			return err
+		}
+		if err := w.PhysicalData.GenerateMissing(w.Profile, dice); err != nil {
 			return err
 		}
 	}

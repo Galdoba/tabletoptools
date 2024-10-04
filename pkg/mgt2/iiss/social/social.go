@@ -3,6 +3,7 @@ package social
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/Galdoba/tabletoptools/pkg/dice"
 	"github.com/Galdoba/tabletoptools/pkg/mgt2/generation/method"
@@ -12,6 +13,7 @@ import (
 	"github.com/Galdoba/tabletoptools/pkg/mgt2/iiss/social/starport"
 	"github.com/Galdoba/tabletoptools/pkg/mgt2/iiss/social/techlevel"
 	profile "github.com/Galdoba/tabletoptools/pkg/mgt2/profile"
+	"github.com/Galdoba/tabletoptools/pkg/mgt2/tradecode"
 )
 
 type Social struct {
@@ -20,6 +22,7 @@ type Social struct {
 	LawLevel   *lawlevel.LawLevel
 	Starport   *starport.Starport
 	TechLevel  *techlevel.TechLevel
+	TradeCodes *[]string
 }
 
 func New() *Social {
@@ -34,27 +37,21 @@ func New() *Social {
 
 func (social *Social) GenerateMissing(context profile.Profile, dice *dice.Dicepool) error {
 	gm := context.Field(profile.GENERATION_METHOD)
+	funcMap := nilRollFuncMap(social)
 	switch gm {
 	case method.Basic:
-		err := errors.New("no rolls wes made")
-		funcs := basicRollFuncMap(social)
-		for _, key := range methodKeys(gm) {
-			// data := context.Field(key)
-			// if data != "" {
-			// 	continue
-			// }
-			// fn := funcs[key]
-			// if fn == nil {
-			// 	fmt.Println("not implemented for key", key)
-			// 	continue
-			// }
-			if err = funcs[key](context, dice); err != nil {
-				return fmt.Errorf("%v generation failed: %v", key, err)
-			}
-			context.Inject(key, ValueOf(social, key))
-		}
-
+		funcMap = basicRollFuncMap(social)
+	case method.Continuation:
+		funcMap = continuationRollFuncMap(social)
 	}
+	err := errors.New("no rolls was made")
+	for _, key := range methodKeys(gm) {
+		if err = funcMap[key](context, dice); err != nil {
+			return fmt.Errorf("%v generation failed: %v", key, err)
+		}
+		context.Inject(key, ValueOf(social, key))
+	}
+
 	return nil
 }
 
@@ -62,13 +59,24 @@ func methodKeys(genMethod string) []string {
 	switch genMethod {
 	case method.Basic:
 		return basicKeys()
+	case method.Continuation:
+		return continuationKeys()
 	}
 	panic(fmt.Sprintf("method keys for '%v' not implemented"))
 	return nil
 }
 
 func basicKeys() []string {
-	return []string{profile.KEY_Pops, profile.KEY_Govr, profile.KEY_Laws, profile.KEY_Port, profile.KEY_TL} //, profile.KEY_Atmo, profile.KEY_Temperature, profile.KEY_Hydr}
+	return []string{profile.KEY_Pops, profile.KEY_Govr, profile.KEY_Laws, profile.KEY_Port, profile.KEY_TL}
+}
+
+func continuationKeys() []string {
+	return []string{profile.KEY_TC}
+}
+
+func nilRollFuncMap(social *Social) map[string]func(profile.Profile, *dice.Dicepool) error {
+	funcMap := make(map[string]func(profile.Profile, *dice.Dicepool) error)
+	return funcMap
 }
 
 func basicRollFuncMap(social *Social) map[string]func(profile.Profile, *dice.Dicepool) error {
@@ -78,6 +86,13 @@ func basicRollFuncMap(social *Social) map[string]func(profile.Profile, *dice.Dic
 	funcMap[profile.KEY_Laws] = social.LawLevel.Roll
 	funcMap[profile.KEY_Port] = social.Starport.Roll
 	funcMap[profile.KEY_TL] = social.TechLevel.Roll
+
+	return funcMap
+}
+
+func continuationRollFuncMap(social *Social) map[string]func(profile.Profile, *dice.Dicepool) error {
+	funcMap := make(map[string]func(profile.Profile, *dice.Dicepool) error)
+	funcMap[profile.KEY_TC] = social.determineTradeCodes
 
 	return funcMap
 }
@@ -94,20 +109,18 @@ func ValueOf(social *Social, key string) string {
 		return fmt.Sprintf("%v", social.Starport.Code)
 	case profile.KEY_TL:
 		return fmt.Sprintf("%v", social.TechLevel.Code)
-		// case profile.KEY_Size_Dkm:
-		// 	return fmt.Sprintf("%v", social.Size.Diemeter)
-		// case profile.KEY_Size_D:
-		// 	return fmt.Sprintf("%v", social.Size.Density)
-		// case profile.KEY_Size_G:
-		// 	return fmt.Sprintf("%v", social.Size.Gravity)
-		// case profile.KEY_Size_M:
-		// 	return fmt.Sprintf("%v", social.Size.Mass)
-		// case profile.KEY_Atmo:
-		// 	return fmt.Sprintf("%v", social.Atmosphere.Code)
-		// case profile.KEY_Temperature:
-		// 	return fmt.Sprintf("%v", social.Temperature)
-		// case profile.KEY_Hydr:
-		// 	return fmt.Sprintf("%v", social.Hydrosphere.Code)
+	case profile.KEY_TC:
+		return fmt.Sprintf("%v", strings.Join(*social.TradeCodes, " "))
+
 	}
 	return ""
+}
+
+func (soc *Social) determineTradeCodes(ctx profile.Profile, dice *dice.Dicepool) error {
+	if soc.TradeCodes != nil {
+		return fmt.Errorf("trade codes were determined")
+	}
+	tc := tradecode.TradeCodes(ctx)
+	soc.TradeCodes = &tc
+	return nil
 }

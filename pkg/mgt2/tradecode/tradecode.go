@@ -1,6 +1,7 @@
 package tradecode
 
 import (
+	"fmt"
 	"slices"
 
 	profile "github.com/Galdoba/tabletoptools/pkg/mgt2/profile"
@@ -14,9 +15,51 @@ type TradeCode struct {
 	validCodes     map[string][]string
 }
 
-func Designate(pr profile.Profile) []string {
+func New(code string) TradeCode {
+	switch code {
+	case "Ag":
+		return Ag
+	case "As":
+		return As
+	case "Ba":
+		return Ba
+	case "De":
+		return De
+	case "Fl":
+		return Fl
+	case "Ga":
+		return Ga
+	case "Hi":
+		return Hi
+	case "Ht":
+		return Ht
+	case "Ic":
+		return Ic
+	case "In":
+		return In
+	case "Lo":
+		return Lo
+	case "Lt":
+		return Lt
+	case "Na":
+		return Na
+	case "Ni":
+		return Ni
+	case "Po":
+		return Po
+	case "Ri":
+		return Ri
+	case "Va":
+		return Va
+	case "Wa":
+		return Wa
+	}
+	return nilCode
+}
+
+func TradeCodes(pr profile.Profile) []string {
 	codes := []string{}
-	for _, tc := range []TradeCode{Ag, As, Ba, De, Fl, Ga, Hi, Ht, Ic, In, Lo, Lt, Na, Ni, Po, Ri, Va, Wa, Fr, Co, Te, Ho, Bo} {
+	for _, tc := range []TradeCode{Ag, As, Ba, De, Fl, Ga, Hi, Ht, Ic, In, Lo, Lt, Na, Ni, Po, Ri, Va, Wa} {
 		validated := 0
 		for key, valid := range tc.validCodes {
 			for _, target := range valid {
@@ -33,6 +76,8 @@ func Designate(pr profile.Profile) []string {
 	slices.Sort(codes)
 	return codes
 }
+
+var nilCode = TradeCode{}
 
 var Ag = TradeCode{
 	code:           "Ag",
@@ -240,7 +285,7 @@ var Fr = TradeCode{
 	description:    "No liquid water, very dry atmosphere.",
 	effect:         "",
 	validCodes: map[string][]string{
-		profile.KEY_Temperature: {"0", "1", "2"},
+		profile.KEY_Atmo_Temp: {"0", "1", "2"},
 	},
 }
 
@@ -250,7 +295,7 @@ var Co = TradeCode{
 	description:    "Little liquid water, extencive ice caps, few clouds.",
 	effect:         "",
 	validCodes: map[string][]string{
-		profile.KEY_Temperature: {"3", "4"},
+		profile.KEY_Atmo_Temp: {"3", "4"},
 	},
 }
 
@@ -260,7 +305,7 @@ var Te = TradeCode{
 	description:    "Earth-like. Liquid and vaporized water are common, moderate ice caps.",
 	effect:         "",
 	validCodes: map[string][]string{
-		profile.KEY_Temperature: {"5", "6", "7", "8", "9"},
+		profile.KEY_Atmo_Temp: {"5", "6", "7", "8", "9"},
 	},
 }
 
@@ -270,7 +315,7 @@ var Ho = TradeCode{
 	description:    "Small or no ice caps, little liquid water. Most water in the form of clouds",
 	effect:         "",
 	validCodes: map[string][]string{
-		profile.KEY_Temperature: {"A", "B"},
+		profile.KEY_Atmo_Temp: {"A", "B"},
 	},
 }
 
@@ -280,6 +325,19 @@ var Bo = TradeCode{
 	description:    "No ice caps, little liquid water.",
 	effect:         "",
 	validCodes: map[string][]string{
-		profile.KEY_Temperature: {"C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q"},
+		profile.KEY_Atmo_Temp: {"C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q"},
 	},
+}
+
+func Inject(ctx profile.Profile, codes ...string) error {
+	for _, code := range codes {
+		tc := New(code)
+		if tc.code == "" {
+			return fmt.Errorf("trade code injection failed: code '%v' does not exist", code)
+		}
+		if err := ctx.Inject(tc.classification, "Y"); err != nil {
+			return fmt.Errorf("trade code injection failed: %v", err)
+		}
+	}
+	return nil
 }

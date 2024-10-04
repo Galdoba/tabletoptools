@@ -37,5 +37,5 @@ func (a *Hydrosphere) Roll(context profile.Profile, dice *dice.Dicepool) error {
 		v := ehex.ValueOf(a.Code)
 		a.Value = &v
 	}
-	return nil
+	return context.Inject(profile.KEY_Hydr, a.Code)
 }

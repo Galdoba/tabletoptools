@@ -16,10 +16,10 @@ func getBasicPrequisites(context profile.Profile, datatype string) (map[string]i
 		return prequisites, nil
 	case profile.KEY_Atmo:
 		keys = []string{profile.KEY_Size}
-	case profile.KEY_Temperature:
+	case profile.KEY_Atmo_Temp:
 		keys = []string{profile.KEY_Size, profile.KEY_Atmo}
 	case profile.KEY_Hydr:
-		keys = []string{profile.KEY_Size, profile.KEY_Atmo, profile.KEY_Temperature}
+		keys = []string{profile.KEY_Size, profile.KEY_Atmo, profile.KEY_Atmo_Temp}
 	case profile.KEY_Govr, profile.KEY_Port:
 		keys = []string{profile.KEY_Pops}
 	case profile.KEY_Laws:

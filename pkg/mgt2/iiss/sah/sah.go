@@ -17,6 +17,7 @@ type SAH struct {
 	Atmosphere  *atmo.Atmosphere
 	Hydrosphere *hydr.Hydrosphere
 	Temperature string
+	MSTL        string
 }
 
 func New() *SAH {
@@ -34,19 +35,17 @@ func (sah *SAH) GenerateMissing(context profile.Profile, dice *dice.Dicepool) er
 		err := errors.New("no rolls wes made")
 		funcs := basicRollFuncMap(sah)
 		for _, key := range methodKeys(gm) {
-			// data := context.Field(key)
-			// if data != "" {
-			// 	continue
-			// }
-			// fn := funcs[key]
-			// if fn == nil {
-			// 	fmt.Println("not implemented for key", key)
-			// 	continue
-			// }
 			if err = funcs[key](context, dice); err != nil {
 				return fmt.Errorf("%v generation failed: %v", key, err)
 			}
-			context.Inject(key, ValueOf(sah, key))
+		}
+	case method.Continuation:
+		err := errors.New("no rolls wes made")
+		funcs := continuationRollFuncMap(sah)
+		for _, key := range methodKeys(gm) {
+			if err = funcs[key](context, dice); err != nil {
+				return fmt.Errorf("%v generation failed: %v", key, err)
+			}
 		}
 
 	}
@@ -57,20 +56,34 @@ func methodKeys(genMethod string) []string {
 	switch genMethod {
 	case method.Basic:
 		return basicKeys()
+	case method.Continuation:
+		return continuationKeys()
 	}
 	panic(fmt.Sprintf("method keys for '%v' not implemented"))
 	return nil
 }
 
 func basicKeys() []string {
-	return []string{profile.KEY_Size, profile.KEY_Atmo, profile.KEY_Temperature, profile.KEY_Hydr}
+	return []string{profile.KEY_Size, profile.KEY_Atmo, profile.KEY_Hydr}
+}
+
+func continuationKeys() []string {
+	return []string{profile.KEY_Size_Dkm}
 }
 
 func basicRollFuncMap(sah *SAH) map[string]func(profile.Profile, *dice.Dicepool) error {
 	funcMap := make(map[string]func(profile.Profile, *dice.Dicepool) error)
 	funcMap[profile.KEY_Size] = sah.Size.Roll
 	funcMap[profile.KEY_Atmo] = sah.Atmosphere.Roll
-	funcMap[profile.KEY_Temperature] = sah.RollTemperature
+	funcMap[profile.KEY_Hydr] = sah.Hydrosphere.Roll
+
+	return funcMap
+}
+
+func continuationRollFuncMap(sah *SAH) map[string]func(profile.Profile, *dice.Dicepool) error {
+	funcMap := make(map[string]func(profile.Profile, *dice.Dicepool) error)
+	funcMap[profile.KEY_Size_Dkm] = sah.Size.Roll
+	funcMap[profile.KEY_Atmo] = sah.Atmosphere.Roll
 	funcMap[profile.KEY_Hydr] = sah.Hydrosphere.Roll
 
 	return funcMap
@@ -81,7 +94,7 @@ func ValueOf(sah *SAH, key string) string {
 	case profile.KEY_Size:
 		return fmt.Sprintf("%v", sah.Size.Code)
 	case profile.KEY_Size_Dkm:
-		return fmt.Sprintf("%v", sah.Size.Diemeter)
+		return fmt.Sprintf("%v", sah.Size.DiameterKm)
 	case profile.KEY_Size_D:
 		return fmt.Sprintf("%v", sah.Size.Density)
 	case profile.KEY_Size_G:
@@ -90,8 +103,8 @@ func ValueOf(sah *SAH, key string) string {
 		return fmt.Sprintf("%v", sah.Size.Mass)
 	case profile.KEY_Atmo:
 		return fmt.Sprintf("%v", sah.Atmosphere.Code)
-	case profile.KEY_Temperature:
-		return fmt.Sprintf("%v", sah.Temperature)
+	case profile.KEY_Atmo_msTL:
+		return fmt.Sprintf("%v", sah.Atmosphere.Temperature)
 	case profile.KEY_Hydr:
 		return fmt.Sprintf("%v", sah.Hydrosphere.Code)
 	}

@@ -1,4 +1,4 @@
-package v2
+package profile
 
 import "fmt"
 

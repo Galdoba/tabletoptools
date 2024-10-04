@@ -1,7 +1,8 @@
-package v2
+package profile
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/Galdoba/tabletoptools/pkg/ehex"
 )
@@ -12,10 +13,13 @@ type profile struct {
 
 type Profile interface {
 	Inject(string, string) error
+	Delete(string) error
 	Field(string) string
 	Format(string) string
-	MustEhex(string) (string, int)
+	//MustEhex(string) (string, int)
 	Ehex(string) (string, int, error)
+	Bool(string) (bool, error)
+	List()
 }
 
 func New() *profile {
@@ -32,6 +36,14 @@ func (pr *profile) Inject(key, val string) error {
 	return nil
 }
 
+func (pr *profile) Delete(key string) error {
+	if _, ok := pr.fields[key]; !ok {
+		return fmt.Errorf("key '%v' is absent", key)
+	}
+	delete(pr.fields, key)
+	return nil
+}
+
 func (pr *profile) Field(key string) string {
 	return pr.fields[key]
 }
@@ -45,10 +57,28 @@ func (pr *profile) Format(key string) string {
 			output += k
 			continue
 		default:
+			if pr.fields[k] == "" {
+				fmt.Println("key", k)
+				return ""
+			}
 			output += pr.fields[k]
 		}
 	}
 	return output
+}
+
+func (pr *profile) Bool(key string) (bool, error) {
+	val := pr.fields[key]
+	if val == "" {
+		return false, fmt.Errorf("field[%v] is absent", key)
+	}
+	switch val {
+	case "true", "Y":
+		return true, nil
+	case "false", "N":
+		return false, nil
+	}
+	return false, fmt.Errorf("field[%v] with value %v is expected as bool", key, val)
 }
 
 func (pr *profile) Ehex(key string) (string, int, error) {
@@ -72,4 +102,15 @@ func (pr *profile) MustEhex(key string) (string, int) {
 		panic(fmt.Sprintf("field[%v] is not ehex: value='%v' '%v' '%v'", key, val, v, c))
 	}
 	return c, v
+}
+
+func (pr *profile) List() {
+	keys := []string{}
+	for k := range pr.fields {
+		keys = append(keys, k)
+	}
+	slices.Sort(keys)
+	for _, k := range keys {
+		fmt.Printf("%v : %v\n", k, pr.fields[k])
+	}
 }

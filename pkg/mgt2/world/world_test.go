@@ -20,4 +20,10 @@ func TestWorld(t *testing.T) {
 	fmt.Println(w)
 
 	fmt.Println(w.Profile.Format(profile.UWP))
+	w.SetGenerationMethod(method.Continuation)
+	err = w.GenerateMissingData(dice.New())
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	w.Profile.List()
 }

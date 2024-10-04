@@ -26,7 +26,7 @@ func RollTemperature(ctx profile.Profile, dice *dice.Dicepool) (string, error) {
 }
 
 func basicTemperatureRoll(ctx profile.Profile, dice *dice.Dicepool) (string, error) {
-	prequisites, err := getBasicPrequisites(ctx, profile.KEY_Temperature)
+	prequisites, err := getBasicPrequisites(ctx, profile.KEY_Atmo_Temp)
 	if err != nil {
 		return "", fmt.Errorf("prequisites aquisition failed: %v", err)
 	}

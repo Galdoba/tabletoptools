@@ -31,7 +31,7 @@ func basicHydrosphereRoll(context profile.Profile, dice *dice.Dicepool) (string,
 	}
 	size := prequisites[profile.KEY_Size]
 	atmo := prequisites[profile.KEY_Atmo]
-	temp := prequisites[profile.KEY_Temperature]
+	temp := prequisites[profile.KEY_Atmo_Temp]
 	switch size {
 	case 0, 1:
 		return "0", nil
