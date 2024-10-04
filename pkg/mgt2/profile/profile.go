@@ -1,118 +1,75 @@
-package profile
+package v2
 
 import (
-	"errors"
 	"fmt"
-	"strings"
+
+	"github.com/Galdoba/tabletoptools/pkg/ehex"
 )
 
-var ErrNoFeed = errors.New("no feed")
-
-type universalProfile struct {
-	profileType   string
-	profilePoints map[string]string
-	exportRule    []string
+type profile struct {
+	fields map[string]string
 }
 
 type Profile interface {
-	Profile() string
-	GetValue(string) string
-	SetValue(string, string) error
-	GenerateMissingData(...Roller) error
+	Inject(string, string) error
+	Field(string) string
+	Format(string) string
+	MustEhex(string) (string, int)
+	Ehex(string) (string, int, error)
 }
 
-func (up *universalProfile) String() string {
-	return up.Profile()
+func New() *profile {
+	pr := profile{}
+	pr.fields = make(map[string]string)
+	return &pr
 }
 
-func New(profileType string) *universalProfile {
-	up := universalProfile{}
-	up.profileType = profileType
-	up.profilePoints = make(map[string]string)
-	up.exportRule = exportRule(up.profileType)
-	switch up.profileType {
-	case UWP:
-		up.profilePoints[KEY_Temp] = "?"
+func (pr *profile) Inject(key, val string) error {
+	if _, ok := pr.fields[key]; ok {
+		return fmt.Errorf("key '%v' is present", key)
 	}
-	for _, key := range up.exportRule {
-		switch key {
-		case SEPARATOR1:
-			continue
-		}
-		up.profilePoints[key] = "?"
-	}
-	return &up
-}
-
-func (up *universalProfile) Profile() string {
-	prf := ""
-	for _, key := range up.exportRule {
-		switch key {
-		case SEPARATOR1:
-			prf += SEPARATOR1
-		default:
-			prf += up.GetValue(key)
-		}
-	}
-	return prf
-}
-
-func (up *universalProfile) GetValue(key string) string {
-	if val, ok := up.profilePoints[key]; ok {
-		return val
-	}
-	return "?"
-}
-
-func (up *universalProfile) SetValue(key, value string) error {
-	if _, ok := up.profilePoints[key]; !ok {
-		return fmt.Errorf("key '%v' does not exeist", key)
-	}
-	up.profilePoints[key] = value
+	pr.fields[key] = val
 	return nil
 }
 
-func NewUWP(uwp string) (*universalProfile, error) {
-	if uwp == "" {
-		return nil, ErrNoFeed
-	}
-	prf := New(UWP)
-	valMap, err := parseUWP(uwp)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse '%v' feed: %v", uwp, err)
-	}
-	for key, val := range valMap {
-		if err := prf.SetValue(key, val); err != nil {
-			return nil, fmt.Errorf("failed to assemple data from '%v' feed: %v", uwp, err)
-		}
-	}
-	return prf, nil
+func (pr *profile) Field(key string) string {
+	return pr.fields[key]
 }
 
-func parseUWP(uwp string) (map[string]string, error) {
-	valueMap := make(map[string]string)
-	if len(uwp) != 9 {
-		return nil, fmt.Errorf("uwp profile expect string with 9 glyphs")
-	}
-	for i, val := range strings.Split(uwp, "") {
-		switch i {
-		case 0:
-			valueMap[KEY_Starport] = val
-		case 1:
-			valueMap[KEY_Size] = val
-		case 2:
-			valueMap[KEY_Atmo] = val
-		case 3:
-			valueMap[KEY_Hydr] = val
-		case 4:
-			valueMap[KEY_Pops] = val
-		case 5:
-			valueMap[KEY_Govr] = val
-		case 6:
-			valueMap[KEY_Laws] = val
-		case 8:
-			valueMap[KEY_TL] = val
+func (pr *profile) Format(key string) string {
+	keys := formatKeys(key)
+	output := ""
+	for _, k := range keys {
+		switch k {
+		case SEP0, SEP1, SEP2, SEP3:
+			output += k
+			continue
+		default:
+			output += pr.fields[k]
 		}
 	}
-	return valueMap, nil
+	return output
+}
+
+func (pr *profile) Ehex(key string) (string, int, error) {
+	val := pr.fields[key]
+	if val == "" {
+		return "", 0, fmt.Errorf("field[%v] is absent", key)
+	}
+	v := ehex.ValueOf(val)
+	c := ehex.ToCode(v)
+	if val != c {
+		return c, v, fmt.Errorf("field[%v] is not ehex: code='%v'; value='%v'", key, c, v)
+	}
+	return c, v, nil
+}
+
+func (pr *profile) MustEhex(key string) (string, int) {
+	val := pr.fields[key]
+	v := ehex.ValueOf(val)
+	c := ehex.ToCode(v)
+	if val != c {
+		panic(fmt.Sprintf("field[%v] is not ehex: value='%v' '%v' '%v'", key, val, v, c))
+	}
+	return c, v
 }

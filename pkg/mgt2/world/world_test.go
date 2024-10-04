@@ -4,16 +4,20 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Galdoba/tabletoptools/pkg/mgt2/profile"
+	"github.com/Galdoba/tabletoptools/pkg/dice"
+	"github.com/Galdoba/tabletoptools/pkg/mgt2/generation/method"
+	profile "github.com/Galdoba/tabletoptools/pkg/mgt2/profile"
 )
 
 func TestWorld(t *testing.T) {
-	wrld, err := New(
-		WithProfileData(profile.KEY_Temp, "Bo"),
-		WithProfileData(profile.KEY_Atmo, "C"),
-	)
+	w := New("test world")
+	w.SetGenerationMethod(method.Basic)
+	err := w.GenerateMissingData(dice.New())
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	fmt.Println(wrld.Profile.Profile(), wrld.TradeCodes)
+
+	fmt.Println(w)
+
+	fmt.Println(w.Profile.Format(profile.UWP))
 }

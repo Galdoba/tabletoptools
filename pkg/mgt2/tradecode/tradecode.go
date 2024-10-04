@@ -3,7 +3,7 @@ package tradecode
 import (
 	"slices"
 
-	"github.com/Galdoba/tabletoptools/pkg/mgt2/profile"
+	profile "github.com/Galdoba/tabletoptools/pkg/mgt2/profile"
 )
 
 type TradeCode struct {
@@ -20,7 +20,7 @@ func Designate(pr profile.Profile) []string {
 		validated := 0
 		for key, valid := range tc.validCodes {
 			for _, target := range valid {
-				if pr.GetValue(key) == target {
+				if pr.Field(key) == target {
 					validated++
 				}
 			}
@@ -64,10 +64,10 @@ var Ba = TradeCode{
 	description:    "Uncolonised and empty.",
 	effect:         "",
 	validCodes: map[string][]string{
-		profile.KEY_Pops:     {"0"},
-		profile.KEY_Govr:     {"0"},
-		profile.KEY_Laws:     {"0"},
-		profile.KEY_Starport: {"X"},
+		profile.KEY_Pops: {"0"},
+		profile.KEY_Govr: {"0"},
+		profile.KEY_Laws: {"0"},
+		profile.KEY_Port: {"X"},
 	},
 }
 
@@ -240,7 +240,7 @@ var Fr = TradeCode{
 	description:    "No liquid water, very dry atmosphere.",
 	effect:         "",
 	validCodes: map[string][]string{
-		profile.KEY_Temp: {"Fr"},
+		profile.KEY_Temperature: {"0", "1", "2"},
 	},
 }
 
@@ -250,7 +250,7 @@ var Co = TradeCode{
 	description:    "Little liquid water, extencive ice caps, few clouds.",
 	effect:         "",
 	validCodes: map[string][]string{
-		profile.KEY_Temp: {"Co"},
+		profile.KEY_Temperature: {"3", "4"},
 	},
 }
 
@@ -260,7 +260,7 @@ var Te = TradeCode{
 	description:    "Earth-like. Liquid and vaporized water are common, moderate ice caps.",
 	effect:         "",
 	validCodes: map[string][]string{
-		profile.KEY_Temp: {"Te"},
+		profile.KEY_Temperature: {"5", "6", "7", "8", "9"},
 	},
 }
 
@@ -270,7 +270,7 @@ var Ho = TradeCode{
 	description:    "Small or no ice caps, little liquid water. Most water in the form of clouds",
 	effect:         "",
 	validCodes: map[string][]string{
-		profile.KEY_Temp: {"Ho"},
+		profile.KEY_Temperature: {"A", "B"},
 	},
 }
 
@@ -280,6 +280,6 @@ var Bo = TradeCode{
 	description:    "No ice caps, little liquid water.",
 	effect:         "",
 	validCodes: map[string][]string{
-		profile.KEY_Temp: {"Bo"},
+		profile.KEY_Temperature: {"C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q"},
 	},
 }
