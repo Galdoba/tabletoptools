@@ -11,7 +11,7 @@ const (
 
 type Grid struct {
 	Orientation int
-	Coordinates map[Coordinates]bool
+	Cell        map[*Coordinates]bool
 }
 
 func NewGrid(orientation int) (*Grid, error) {
@@ -22,17 +22,8 @@ func NewGrid(orientation int) (*Grid, error) {
 	default:
 		return nil, errors.New("invalid orientation")
 	}
-	gr.Coordinates = make(map[Coordinates]bool)
+	gr.Cell = make(map[*Coordinates]bool)
 	return &gr, nil
-}
-
-type Coordinates struct {
-	Orientation int
-	X           int
-	Y           int
-	Q           int
-	R           int
-	S           int
 }
 
 type offset struct {
@@ -40,7 +31,7 @@ type offset struct {
 	c int
 }
 
-type hex struct {
+type cube struct {
 	q int
 	r int
 	s int
