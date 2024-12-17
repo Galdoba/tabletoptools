@@ -1,3 +1,5 @@
+github.com/BurntSushi/toml v1.4.0 h1:kuoIxZQy2WRRk1pttg9asf+WVv6tWQuBNVmK8+nqPr0=
+github.com/BurntSushi/toml v1.4.0/go.mod h1:ukJfTF/6rtPPRCnwkur4qwRxa8vTRFBF0uk2lLoLwho=
 github.com/Galdoba/devtools v0.0.0-20240526021321-3ad8501bc298 h1:73fMuH34NvyqYnoW9KzZIrLn93K7GZp41aXSolsA9iI=
 github.com/Galdoba/devtools v0.0.0-20240526021321-3ad8501bc298/go.mod h1:L26HtyYje5cDgqV1TOQwDMb6QE7oNo4AsEeB3qqcGUI=
 github.com/Galdoba/devtools v0.0.0-20240917031409-e84b3c0bd884 h1:deNdNaECGpYBdLPOxgzgF14J5uY/gEj+4zZA3n7q4es=
